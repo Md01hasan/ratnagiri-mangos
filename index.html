@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ratnagiri Mango - Home</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-image: url('watermarkremove.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+      /* Header */
+      header {
+            background: linear-gradient(135deg, rgba(255,153,0,0.9) 0%, rgba(33,218,64,0.8) 100%);
+            padding: 15px 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            padding: 10px 0;
+            background: rgba(255,255,255,0.95);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            font-weight: 500;
+            padding: 5px 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            background: white;
+            bottom: 0;
+            left: 0;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        header.scrolled .nav-links a {
+            color: var(--dark);
+        }
+
+        header.scrolled .nav-links a::after {
+            background: var(--primary);
+        }
+
+        .nav-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-icon {
+            color: white;
+            font-size: 1.2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled .nav-icon {
+            color: var(--dark);
+        }
+
+        .nav-icon:hover {
+            color: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        
+
+        header.scrolled .user-avatar {
+            border-color: var(--primary);
+        }
+
+        
+        .seller-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .seller-profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+        
+        /* Icons */
+        .nav-center i {
+            font-size: 24px;
+            color: #080101;
+            transition: 0.3s ease;
+        }
+
+        .nav-center i:hover {
+            color: #4b2c20;
+        }
+
+        /* Cart Icon */
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-icon #cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: #d32f2f;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            padding: 3px 6px;
+            font-weight: bold;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            font-size: 30px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        @media (max-width: 768px) {
+            .nav-center {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                background: #ff9900;
+                width: 100%;
+                text-align: center;
+                padding: 15px 0;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+
+            .nav-center a {
+                padding: 12px;
+                display: block;
+            }
+
+            .hamburger {
+                display: block;
+            }
+        }
+
+        /* Product Section */
+        #products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 100px 30px 30px;
+        }
+
+        .product-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: scale(1.05);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .product-details h3 {
+            font-size: 18px;
+            color: #ff9900;
+            margin: 10px 0;
+            min-height: 50px;
+        }
+
+        .product-details p {
+            font-size: 18px;
+            color: #4b2c20;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .add-to-cart {
+            background: #ff6600;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s ease;
+            width: 100%;
+        }
+
+        .add-to-cart:hover {
+            background: #4b2c20;
+        }
+
+        footer {
+            background-color: #222;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 16px;
+        }
+
+        footer a {
+            color: #21da40;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: #ff6600;
+        }
+
+        .social-icons {
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            font-size: 24px;
+            margin: 0 15px;
+        }
+
+        .social-icons i {
+            transition: transform 0.3s ease;
+        }
+
+        .social-icons a:hover i {
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+      <title>My Account - Fresh Fruits Store</title>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
+      <style>
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+        }
+    
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f8f9fa;
+          line-height: 1.6;
+        }
+    
+        a {
+          text-decoration: none;
+          color: inherit;
+        }
+    
+        /* Navbar */
+        header {
+          background: linear-gradient(90deg, rgba(121,67,9,0.37) 0%, rgba(246,190,58,0.77) 50%, rgba(40,251,227,0.83) 100%);
+          padding: 10px 30px;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          z-index: 1000;
+          height: 60px;
+        }
+    
+        .logo img {
+          width: 80px;
+          height: auto;
+        }
+    
+        .nav-links {
+          display: flex;
+          align-items: center;
+          gap: 25px;
+        }
+    
+        .nav-links a {
+          font-size: 18px;
+          font-weight: bold;
+          color: #333;
+          transition: color 0.3s ease;
+        }
+    
+        .nav-links a:hover {
+          color: #ff6600;
+        }
+    
+        .nav-links img {
+          width: 36px;
+          height: 36px;
+          vertical-align: middle;
+        }
+    
+        .cart-icon {
+          position: relative;
+        }
+    
+        .cart-icon #cart-count {
+          position: absolute;
+          top: -5px;
+          right: -10px;
+          background-color: #d32f2f;
+          color: white;
+          border-radius: 50%;
+          font-size: 12px;
+          padding: 3px 6px;
+          font-weight: bold;
+        }
+    
+        .seller-profile img {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 2px solid #fff;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+    
+        .seller-profile img:hover {
+          transform: scale(1.1);
+          box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+    
+        #menu-toggle {
+          display: none;
+        }
+    
+        .menu-icon {
+          display: none;
+          font-size: 26px;
+          color: #333;
+          cursor: pointer;
+        }
+    
+        @media (max-width: 768px) {
+          .menu-icon {
+            display: block;
+          }
+    
+          .nav-links {
+            display: none;
+            flex-direction: column;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            width: 100%;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            z-index: 999;
+          }
+    
+          #menu-toggle:checked + .menu-icon + .nav-links {
+            display: flex;
+          }
+    
+          .nav-links a {
+            padding: 10px 20px;
+            width: 100%;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+          }
+    
+          .logo img {
+            width: 60px;
+          }
+    
+          .seller-profile img {
+            width: 40px;
+            height: 40px;
+          }
+        }
+    
+        /* Account Section */
+        .account-container {
+          max-width: 800px;
+          margin: 100px auto 50px;
+          padding: 20px;
+          background: white;
+          border-radius: 10px;
+          box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+    
+        .account-container h2 {
+          text-align: center;
+          margin-bottom: 25px;
+          font-size: 28px;
+        }
+    
+        .account-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+          gap: 20px;
+        }
+    
+        .account-box {
+          padding: 20px;
+          text-align: center;
+          border: 1px solid #ddd;
+          border-radius: 10px;
+          font-size: 18px;
+          background-color: #fafafa;
+          transition: background 0.3s, transform 0.2s;
+          cursor: pointer;
+        }
+    
+        .account-box:hover {
+          background-color: #f0f0f0;
+          transform: translateY(-3px);
+        }
+    
+        .logout-btn {
+          margin-top: 30px;
+          width: 100%;
+          background: #d9534f;
+          color: white;
+          padding: 12px;
+          border: none;
+          border-radius: 5px;
+          font-size: 18px;
+          cursor: pointer;
+          transition: background 0.3s ease;
+        }
+    
+        .logout-btn:hover {
+          background: #c9302c;
+        }
+    
+        footer {
+          background-color: #222;
+          color: white;
+          text-align: center;
+          padding: 20px 10px;
+          font-size: 16px;
+        }
+    
+        footer a {
+          color: #21da40;
+          text-decoration: none;
+          margin: 0 10px;
+          transition: color 0.3s ease;
+        }
+    
+        footer a:hover {
+          color: #ff6600;
+        }
+    
+        .social-icons {
+          margin-top: 10px;
+        }
+    
+        .social-icons a {
+          font-size: 24px;
+          margin: 0 15px;
+          color: white;
+        }
+    
+        .social-icons i {
+          transition: transform 0.3s ease;
+        }
+    
+        .social-icons a:hover i {
+          transform: scale(1.2);
+          color: #ff6600;
+        }
+      </style>
+    </head>
+    <b>
+    
+      <!-- Header -->
+      <header>
+        <div class="logo">
+          <a href="index.html">
+            <img src="removelogo.png" alt="Fresh Mango Logo">
+          </a>
+        </div>
+        <input type="checkbox" id="menu-toggle" />
+        <label for="menu-toggle" class="menu-icon"><i class="fas fa-bars"></i></label>
+        <nav class="nav-links">
+          <a href="alphanso.html"><i class="fas fa-home"></i> Home</a>
+          <a href="about.html"><i class="fas fa-info-circle"></i> About</a>
+          <a href="alphanso.html"><img src="mango.png" alt="Mango" /></a>
+          <a href="cart.html" class="cart-icon">
+            <i class="fas fa-shopping-cart"></i><span id="cart-count">0</span>
+          </a>
+          <a href="sellerinfo.html" class="seller-profile">
+            <img src="hasan.jpg" alt="Seller Profile" />
+          </a>
+        </nav>
+      </header>
+    
+      
+    
+      
+    <!-- Product Grid -->
+    <section id="products">
+        <div class="product-card">
+            <img src="1dozen.jpg" alt="Fresh Alphonso Mango (1 Dozen)">
+            <div class="product-details">
+                <h3>Alphonso Mango (1 Dozen)</h3>
+                <p data-price="500">₹500</p>
+                <button class="add-to-cart" aria-label="Add Fresh Mango (1 Dozen) to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="2dozen.jpg" alt="Alphonso Mango (2 Dozen)">
+            <div class="product-details">
+                <h3>Alphonso Mango (2 Dozen)</h3>
+                <p data-price="800">₹800</p>
+                <button class="add-to-cart" aria-label="Add Mango (2 Dozen) to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="4dozen.jpg" alt="Alphonso Mango (4 Dozen)">
+            <div class="product-details">
+                <h3>Alphonso Mango (4 Dozen)</h3>
+                <p data-price="1500">₹1500</p>
+                <button class="add-to-cart" aria-label="Add Mango (4 Dozen) to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="mangobuefi.jpg" alt="Mango Burfi">
+            <div class="product-details">
+                <h3>Mango Burfi</h3>
+                <p data-price="500">₹500 per kg</p>
+                <button class="add-to-cart" aria-label="Add Mango Burfi to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="mangopickle.jpg" alt="Mango Pickle">
+            <div class="product-details">
+                <h3>Mango Pickle</h3>
+                <p data-price="600">₹600 per kg</p>
+                <button class="add-to-cart" aria-label="Add Mango Pickle to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="mangoroti.jpg" alt="Dried Mango Slices">
+            <div class="product-details">
+                <h3>Dried Mango Slices</h3>
+                <p data-price="400">₹400 per kg</p>
+                <button class="add-to-cart" aria-label="Add Dried Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="mangomurabba.jpg" alt="Mango Murabba">
+            <div class="product-details">
+                <h3>Mango Murabba</h3>
+                <p data-price="2000">₹2000 per kg</p>
+                <button class="add-to-cart" aria-label="Add Mango Murabba to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="mangojuice.jpg" alt="Mango Juice">
+            <div class="product-details">
+                <h3>Mango Juice</h3>
+                <p data-price="200">₹200 per liter</p>
+                <button class="add-to-cart" aria-label="Add Mango Juice to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="mangocandy.jpg" alt="Mango Candy">
+            <div class="product-details">
+                <h3>Mango Candy</h3>
+                <p data-price="100">₹100 per pack</p>
+                <button class="add-to-cart" aria-label="Add Mango Candy to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="totapuri.jpg" alt="Totapuri Mango">
+            <div class="product-details">
+                <h3>Totapuri Mango</h3> 
+                <p data-price="1500">₹1500 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Totapuri Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="pairi.jpj.jpg" alt="Pairi Mango">
+            <div class="product-details">
+                <h3>Pairi Mango (1 dozen)</h3>
+                <p data-price="2000">₹2000 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Pairi Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="pairi.jpj.jpg" alt="Pairi Mango">
+            <div class="product-details">
+                <h3>Pairi Mango (2 dozen)</h3>
+                <p data-price="2500">₹2500 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Pairi Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="pairi.jpj.jpg" alt="Pairi Mango">
+            <div class="product-details">
+                <h3>Pairi Mango (4 dozen)</h3>
+                <p data-price="4500">₹4500 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Pairi Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="ratnamango.jpg" alt="Ratna Mango">
+            <div class="product-details">
+                <h3>Ratna Mango</h3>
+                <p data-price="2000">₹2000 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Ratna Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="kespuri.jpg" alt="Kesar Mango">
+            <div class="product-details">
+                <h3>Kesar Mango (2 dozen)</h3>
+                <p data-price="1500">₹1500 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Kesar Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="kespuri.jpg" alt="Kesar Mango">
+            <div class="product-details">
+                <h3>Kesar Mango (1 dozen)</h3>
+                <p data-price="1000">₹1000 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Kesar Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="kespuri.jpg" alt="Kesar Mango">
+            <div class="product-details">
+                <h3>Kesar Mango (4 dozen)</h3>
+                <p data-price="4000">₹4000 per dozen</p>
+                <button class="add-to-cart" aria-label="Add Kesar Mango to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="newimage.jpg" alt="Mango Chutney">
+            <div class="product-details">
+                <h3>Mango Chutney</h3>
+                <p data-price="300">₹300</p>
+                <button class="add-to-cart" aria-label="Add Mango Chutney to Cart">Add to Cart</button>
+            </div>
+        </div>
+        <div class="product-card">
+            <img src="aampanna.jpg" alt="Aam Panna">
+            <div class="product-details">
+                <h3>Aam Panna</h3>
+                <p data-price="300">₹300 (500 ml)</p>
+                <button class="add-to-cart" aria-label="Add Aam Panna to Cart">Add to Cart</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Premium Bankot Alphonso Mangoes. All rights reserved.</p>
+        <p>Contact Us: <a href="mailto:ratnagirimango@gmail.com">ratnagirimango@gmail.com</a> | Phone: <a href="tel:+917821091868">+91 7821091868</a></p>
+        <div class="social-icons">
+            <a href="https://www.facebook.com/" target="_blank"><i class="fab fa-facebook-f"></i></a>
+            <a href="https://www.instagram.com/md_hasan20_" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://wa.me/7821091868" target="_blank"><i class="fab fa-whatsapp"></i></a>
+        </div>
+        <p style="margin-top: 20px;">
+            <a href="privacy.html">Privacy Policy</a> | 
+            <a href="terms.html">Terms of Service</a> | 
+            <a href="shipping.html">Shipping Policy</a>
+        </p>
+    </footer>
+
+    
+
+    <script>
+        // Navbar Toggle
+        const hamburger = document.getElementById("hamburger");
+        if (hamburger) {
+            hamburger.addEventListener("click", () => {
+                document.querySelector(".nav-center").classList.toggle("active");
+            });
+        }
+
+        // Cart Logic
+        let cart = JSON.parse(localStorage.getItem("fresh-fruits-cart")) || [];
+        const cartCount = document.getElementById("cart-count");
+
+        function updateCartCount() {
+            cartCount.textContent = cart.reduce((sum, item) => sum + item.quantity, 0) || 0;
+        }
+
+        document.querySelectorAll(".add-to-cart").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const product = event.target.closest(".product-card");
+                const name = product.querySelector("h3").textContent;
+                const price = product.querySelector("p").getAttribute("data-price");
+                const image = product.querySelector("img").src;
+
+                let existingItem = cart.find(item => item.name === name);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({ name, price, quantity: 1, image });
+                }
+
+                localStorage.setItem("fresh-fruits-cart", JSON.stringify(cart));
+                updateCartCount();
+                
+                // Visual feedback
+                button.textContent = "Added!";
+                button.style.backgroundColor = "#4CAF50";
+                setTimeout(() => {
+                    button.textContent = "Add to Cart";
+                    button.style.backgroundColor = "#ff6600";
+                }, 1000);
+            });
+        });
+
+        // Initialize cart count
+        updateCartCount();
+    </script>
+</body>
+</html>

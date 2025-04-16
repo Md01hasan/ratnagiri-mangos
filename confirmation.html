@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - Ratnagiri Alphonso</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .confirmation-container {
+            background: white;
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #21da40;
+            margin-bottom: 20px;
+        }
+
+        .confirmation-message {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .order-details {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .order-details h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .order-details ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .order-details ul li {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .continue-shopping-btn {
+            padding: 10px 20px;
+            background: #fb641b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .continue-shopping-btn:hover {
+            background: #c4520a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="confirmation-container">
+        <h2>Order Confirmed!</h2>
+        <p class="confirmation-message">Thank you for your purchase. Your order has been successfully placed.</p>
+
+        <!-- Order Details -->
+        <div class="order-details">
+            <h3>Order Information</h3>
+            <ul id="order-info"></ul>
+        </div>
+
+        <!-- Product Details -->
+        <div class="order-details">
+            <h3>Product Details</h3>
+            <ul id="product-details"></ul>
+        </div>
+
+        <!-- Delivery Details -->
+        <div class="order-details">
+            <h3>Delivery Details</h3>
+            <ul id="delivery-details"></ul>
+        </div>
+
+        <!-- Payment Details -->
+        <div class="order-details">
+            <h3>Payment Details</h3>
+            <ul id="payment-details"></ul>
+        </div>
+
+        <button class="continue-shopping-btn" onclick="window.location.href = 'index.html'">Continue Shopping</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Retrieve cart, selected address, and payment method
+            let cart = JSON.parse(localStorage.getItem("fresh-fruits-cart")) || [];
+            const selectedAddress = JSON.parse(localStorage.getItem("selectedAddress")) || {};
+            const paymentMethod = localStorage.getItem("paymentMethod") || "Not Selected";
+
+            let paymentStatus = (paymentMethod === "Cash on Delivery") ? "Cash on Delivery" : "Paid";
+
+            // Generate Order ID
+            const orderId = "ORD" + Math.floor(Math.random() * 1000000);
+            const orderDate = new Date().toLocaleDateString();
+
+            // Store product details
+            let orderedProducts = cart.map(item => ({
+                name: item.name || "Unknown Product",
+                description: item.description || "No description available",
+                quantity: item.quantity || 1
+            }));
+
+            // Create Order Object
+            const orderDetails = {
+                orderId: orderId,
+                orderDate: orderDate,
+                name: selectedAddress.fullName || "Not provided",
+                address: `${selectedAddress.address || ""}, ${selectedAddress.city || ""}`,
+                state: selectedAddress.state || "",
+                pincode: selectedAddress.pincode || "",
+                phone: selectedAddress.phone || "",
+                paymentMethod: paymentMethod,
+                paymentStatus: paymentStatus,
+                products: orderedProducts
+            };
+
+            // Save order to localStorage
+            let orders = JSON.parse(localStorage.getItem("orders")) || [];
+            orders.push(orderDetails);
+            localStorage.setItem("orders", JSON.stringify(orders));
+
+            // Display Order Details
+            document.getElementById("order-info").innerHTML = `
+                <li><span>Order ID:</span><span>${orderDetails.orderId}</span></li>
+                <li><span>Order Date:</span><span>${orderDetails.orderDate}</span></li>
+            `;
+
+            // Display Product Details
+            document.getElementById("product-details").innerHTML = orderDetails.products.map(product => `
+                <li><span>Product:</span><span>${product.name}</span></li>
+                <li><span>Description:</span><span>${product.description}</span></li>
+                <li><span>Quantity:</span><span>${product.quantity}</span></li>
+                <hr>
+            `).join("");
+
+            // Display Delivery Details
+            document.getElementById("delivery-details").innerHTML = `
+                <li><span>Name:</span><span>${orderDetails.name}</span></li>
+                <li><span>Address:</span><span>${orderDetails.address}</span></li>
+                <li><span>State:</span><span>${orderDetails.state}</span></li>
+                <li><span>Pincode:</span><span>${orderDetails.pincode}</span></li>
+                <li><span>Mobile:</span><span>${orderDetails.phone}</span></li>
+            `;
+
+            // Display Payment Details
+            document.getElementById("payment-details").innerHTML = `
+                <li><span>Payment Method:</span><span>${orderDetails.paymentMethod}</span></li>
+                <li><span>Payment Status:</span><span>${orderDetails.paymentStatus}</span></li>
+            `;
+
+            // Clear Cart & Payment Method after order is placed
+            localStorage.removeItem("fresh-fruits-cart");
+            localStorage.removeItem("paymentMethod");
+        });
+    </script>
+
+</body>
+</html>

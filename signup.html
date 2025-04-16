@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Signup</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .signup-container {
+            background: white;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            width: 380px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #34495e;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e3e7;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .input-group input.error {
+            border-color: #e74c3c;
+        }
+
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 13px;
+            margin-top: 5px;
+            display: block;
+            min-height: 18px;
+        }
+
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            margin: 10px 0;
+            min-height: 20px;
+        }
+
+        .signup-btn, .login-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .signup-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .signup-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .signup-btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .login-btn {
+            background-color: transparent;
+            color: #3498db;
+            border: 2px solid #3498db;
+        }
+
+        .login-btn:hover {
+            background-color: #f8f9fa;
+        }
+
+        .password-strength {
+            height: 4px;
+            background: #eee;
+            border-radius: 2px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+
+        .password-strength-fill {
+            height: 100%;
+            width: 0%;
+            background: #e74c3c;
+            transition: width 0.3s, background 0.3s;
+        }
+
+        .security-notice {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+
+        .clearing-status {
+            color: #3498db;
+            font-size: 13px;
+            margin: 10px 0;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <h2>Create Your Account</h2>
+        <div class="success-message" id="success-message"></div>
+        <div class="clearing-status" id="clearing-status"></div>
+        
+        <div class="input-group">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" placeholder="Enter your full name" autocomplete="name">
+            <span class="error-message" id="name-error"></span>
+        </div>
+        
+        <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" placeholder="Enter your email" autocomplete="email">
+            <span class="error-message" id="email-error"></span>
+        </div>
+        
+        <div class="input-group">
+            <label for="password">Password</label>
+            <div class="password-container">
+                <input type="password" id="password" placeholder="Create a password" autocomplete="new-password">
+                <span class="toggle-password" id="toggle-password">👁️</span>
+            </div>
+            <div class="password-strength">
+                <div class="password-strength-fill" id="password-strength-fill"></div>
+            </div>
+            <span class="error-message" id="password-error"></span>
+        </div>
+        
+        <div class="input-group">
+            <label for="confirm-password">Confirm Password</label>
+            <div class="password-container">
+                <input type="password" id="confirm-password" placeholder="Re-enter your password" autocomplete="new-password">
+                <span class="toggle-password" id="toggle-confirm-password">👁️</span>
+            </div>
+            <span class="error-message" id="confirm-password-error"></span>
+        </div>
+        
+        <button class="signup-btn" id="signup-btn">Sign Up</button>
+        <button class="login-btn" id="login-btn">Already have an account? Login</button>
+        
+        <div class="security-notice">
+            🔒 Your security is important to us. We'll never share your personal information.
+        </div>
+    </div>
+
+    <script>
+        // Password hashing function
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password + 'my-salt-value');
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Function to clear all user-specific data
+        async function clearAllUserData() {
+            const statusElement = document.getElementById('clearing-status');
+            statusElement.textContent = "Preparing fresh account...";
+            
+            // List all keys that contain user-specific data
+            const userDataKeys = [
+                'cart',
+                'orders',
+                'addresses',
+                'wishlist',
+                'paymentMethods',
+                'userPreferences',
+                'recentSearches',
+                'notifications',
+                'shippingInfo',
+                'billingInfo',
+                'coupons',
+                'rewards'
+            ];
+            
+            // Clear each key with slight delay for visual feedback
+            for (const key of userDataKeys) {
+                localStorage.removeItem(key);
+                await new Promise(resolve => setTimeout(resolve, 50));
+            }
+            
+            // Clear session storage
+            sessionStorage.clear();
+            
+            // Clear IndexedDB if exists
+            if (window.indexedDB) {
+                try {
+                    const databases = await indexedDB.databases();
+                    for (const db of databases) {
+                        await new Promise((resolve, reject) => {
+                            const request = indexedDB.deleteDatabase(db.name);
+                            request.onsuccess = resolve;
+                            request.onerror = reject;
+                        });
+                    }
+                } catch (error) {
+                    console.error("Error clearing IndexedDB:", error);
+                }
+            }
+            
+            // Clear cookies
+            document.cookie.split(";").forEach(cookie => {
+                document.cookie = cookie.replace(/^ +/, "")
+                    .replace(/=.*/, `=;expires=${new Date(0).toUTCString()};path=/`);
+            });
+            
+            statusElement.textContent = "All previous data cleared successfully!";
+            await new Promise(resolve => setTimeout(resolve, 500));
+            statusElement.textContent = "";
+        }
+
+        // Toggle password visibility
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        document.getElementById('toggle-confirm-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('confirm-password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function() {
+            const password = this.value;
+            const strengthFill = document.getElementById('password-strength-fill');
+            let strength = 0;
+            
+            if (password.length > 0) strength += 20;
+            if (password.length >= 8) strength += 20;
+            if (/[A-Z]/.test(password)) strength += 20;
+            if (/[0-9]/.test(password)) strength += 20;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+            
+            strengthFill.style.width = strength + '%';
+            
+            // Change color based on strength
+            if (strength < 40) {
+                strengthFill.style.backgroundColor = '#e74c3c';
+            } else if (strength < 80) {
+                strengthFill.style.backgroundColor = '#f39c12';
+            } else {
+                strengthFill.style.backgroundColor = '#27ae60';
+            }
+        });
+
+        // Form submission handler
+        document.getElementById('signup-btn').addEventListener('click', async function() {
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+            const signupBtn = document.getElementById("signup-btn");
+
+            // Get error elements
+            const nameError = document.getElementById("name-error");
+            const emailError = document.getElementById("email-error");
+            const passwordError = document.getElementById("password-error");
+            const confirmPasswordError = document.getElementById("confirm-password-error");
+            const successMessage = document.getElementById("success-message");
+
+            // Clear messages and errors
+            nameError.textContent = "";
+            emailError.textContent = "";
+            passwordError.textContent = "";
+            confirmPasswordError.textContent = "";
+            successMessage.textContent = "";
+            document.getElementById("name").classList.remove("error");
+            document.getElementById("email").classList.remove("error");
+            document.getElementById("password").classList.remove("error");
+            document.getElementById("confirm-password").classList.remove("error");
+
+            // Validate inputs
+            let isValid = true;
+            if (!name) {
+                nameError.textContent = "Full name is required";
+                document.getElementById("name").classList.add("error");
+                isValid = false;
+            }
+            if (!email) {
+                emailError.textContent = "Email is required";
+                document.getElementById("email").classList.add("error");
+                isValid = false;
+            } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                emailError.textContent = "Please enter a valid email address";
+                document.getElementById("email").classList.add("error");
+                isValid = false;
+            }
+            if (!password) {
+                passwordError.textContent = "Password is required";
+                document.getElementById("password").classList.add("error");
+                isValid = false;
+            } else if (password.length < 8) {
+                passwordError.textContent = "Password must be at least 8 characters";
+                document.getElementById("password").classList.add("error");
+                isValid = false;
+            }
+            if (password !== confirmPassword) {
+                confirmPasswordError.textContent = "Passwords do not match";
+                document.getElementById("confirm-password").classList.add("error");
+                isValid = false;
+            }
+            if (!isValid) return;
+
+            // Disable button during processing
+            signupBtn.disabled = true;
+            signupBtn.textContent = "Creating account...";
+
+            try {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 800));
+
+                let users = JSON.parse(localStorage.getItem("users")) || [];
+
+                // Check if email exists
+                if (users.some(user => user.email === email)) {
+                    emailError.textContent = "Email already registered";
+                    document.getElementById("email").classList.add("error");
+                    return;
+                }
+
+                // Clear all existing user data before creating new account
+                await clearAllUserData();
+
+                // Hash password and create new user
+                const passwordHash = await hashPassword(password);
+                const newUser = { 
+                    name, 
+                    email, 
+                    passwordHash,
+                    createdAt: new Date().toISOString(),
+                    lastLogin: null
+                };
+
+                // Save user data
+                users.push(newUser);
+                localStorage.setItem("users", JSON.stringify(users));
+
+                // Create fresh session
+                const userSession = {
+                    email: newUser.email,
+                    name: newUser.name,
+                    expires: Date.now() + (1000 * 60 * 60 * 2) // 2 hour expiration
+                };
+                localStorage.setItem("currentSession", JSON.stringify(userSession));
+
+                // Success message
+                successMessage.textContent = "Account created successfully! Starting fresh...";
+
+                // Redirect to homepage after delay
+                setTimeout(() => {
+                    console.log("Redirecting to index.html with clean session");
+                    window.location.href = "index.html";
+                }, 1500);
+
+            } catch (error) {
+                console.error("Signup error:", error);
+                successMessage.textContent = "";
+                document.getElementById("clearing-status").textContent = "";
+                nameError.textContent = "An error occurred. Please try again.";
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.textContent = "Sign Up";
+            }
+        });
+
+        // Login button redirect
+        document.getElementById('login-btn').addEventListener('click', function() {
+            console.log("Redirecting to login page...");
+            window.location.href = "login.html";
+        });
+
+        // Allow form submission with Enter key
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('signup-btn').click();
+            }
+        });
+    </script>
+</body>
+</html>

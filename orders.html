@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Orders - Ratnagiri Mango</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.9)),
+        url('https://images.unsplash.com/photo-1622630846486-fdad1c5c70b9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80')
+        no-repeat center center/cover;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    .order-container {
+      max-width: 900px;
+      margin: 80px auto 50px;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 15px;
+      box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    h2 {
+      margin-bottom: 25px;
+      color: #d57c00;
+      font-size: 28px;
+    }
+
+    .order-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .order-list li {
+      padding: 20px;
+      margin-bottom: 20px;
+      background: #fff8f0;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+      text-align: left;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .order-list li:hover {
+      transform: scale(1.01);
+    }
+
+    .cancel-btn {
+      padding: 8px 16px;
+      background: #d9534f;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      font-size: 14px;
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .cancel-btn:hover {
+      background: #b52b27;
+    }
+
+    .no-orders {
+      color: #d9534f;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .order-container {
+        padding: 20px;
+        margin: 50px 10px;
+      }
+      .cancel-btn {
+        position: static;
+        display: block;
+        margin: 15px auto 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="order-container">
+    <h2><i class="fas fa-box"></i> My Orders</h2>
+    <ul id="order-list" class="order-list"></ul>
+  </main>
+
+  <script>
+    function loadOrders() {
+      const orders = JSON.parse(localStorage.getItem("orders")) || [];
+      const orderList = document.getElementById("order-list");
+      orderList.innerHTML = "";
+
+      if (orders.length === 0) {
+        orderList.innerHTML = `<li class="no-orders">You haven't placed any orders yet.</li>`;
+        return;
+      }
+
+      orders.forEach((order, index) => {
+        const li = document.createElement("li");
+        let totalAmount = 0;
+
+        let productDetails = "";
+        if (order.products && order.products.length > 0) {
+          productDetails = order.products.map(product => {
+            const price = parseFloat(product.price) || 0;
+            const quantity = parseInt(product.quantity) || 1;
+            const subtotal = price * quantity;
+            totalAmount += subtotal;
+
+            return `
+              <p>
+                <strong>Product:</strong> ${product.name || "Unknown"}<br>
+                <strong>Quantity:</strong> ${quantity}<br>
+                <strong>Price:</strong> ₹${price.toFixed(2)}
+              </p>
+            `;
+          }).join("");
+        }
+
+        const formattedDate = order.orderDate
+          ? new Date(order.orderDate).toLocaleDateString()
+          : "N/A";
+
+        li.innerHTML = `
+          <p><strong>Order ID:</strong> ${order.orderId || "N/A"}</p>
+          ${productDetails}
+          <p><strong>Total Amount:</strong> ₹${totalAmount.toFixed(2)}</p>
+          <p><strong>Order Date:</strong> ${formattedDate}</p>
+          <p><strong>Address:</strong> ${order.address || "N/A"}, ${order.city || "N/A"}, ${order.state || "N/A"} - ${order.pincode || "N/A"}</p>
+          <p><strong>Phone:</strong> ${order.phone || "N/A"}</p>
+          <p><strong>Payment Method:</strong> ${order.paymentMethod || "N/A"}</p>
+          <p><strong>Payment Status:</strong> ${order.paymentStatus || "N/A"}</p>
+          <button class="cancel-btn" onclick="cancelOrder(${index})">Cancel Order</button>
+        `;
+
+        orderList.appendChild(li);
+      });
+    }
+
+    function cancelOrder(index) {
+      if (confirm("Are you sure you want to cancel this order?")) {
+        let orders = JSON.parse(localStorage.getItem("orders")) || [];
+        orders.splice(index, 1);
+        localStorage.setItem("orders", JSON.stringify(orders));
+        loadOrders();
+      }
+    }
+
+    loadOrders();
+  </script>
+
+</body>
+</html>

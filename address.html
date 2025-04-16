@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Delivery Address - Ratnagiri Mango</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f3f6;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Navbar styles (same as other pages) */
+        header {
+            background: rgb(121,67,9);
+            background: linear-gradient(90deg, rgba(121,67,9,0.37298669467787116) 0%, rgba(246,190,58,0.7651435574229692) 0%, rgba(40,251,227,0.8295693277310925) 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+        }
+
+        .logo img {
+            width: 80px;
+            height: auto;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .nav-center a:hover {
+            color: #ff6600;
+        }
+
+        .nav-center i {
+            font-size: 22px;
+        }
+
+        .seller-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .seller-profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+        
+        /* Main content */
+        .container {
+            max-width: 800px;
+            margin: 100px auto 50px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            font-size: 22px;
+            font-weight: bold;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #ddd;
+            margin-bottom: 15px;
+            color: #333;
+        }
+        
+        .address-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .address-card {
+            background: white;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+            position: relative;
+        }
+        
+        .address-card.selected {
+            border-color: #2874f0;
+            background: #e3f2fd;
+        }
+        
+        .address-card:hover {
+            background: #f9f9f9;
+        }
+        
+        .address-details {
+            flex: 1;
+        }
+        
+        .address-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .deliver-btn, .remove-btn {
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        
+        .deliver-btn {
+            background: #2874f0;
+            color: white;
+        }
+        
+        .deliver-btn:hover {
+            background: #1a5bbf;
+        }
+        
+        .remove-btn {
+            background: #ff4d4d;
+            color: white;
+        }
+        
+        .remove-btn:hover {
+            background: #d43838;
+        }
+        
+        .add-address-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            background: #ff9f00;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .add-address-btn:hover {
+            background: #e68a00;
+        }
+        
+        /* Footer styles */
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        /* Modal styles for adding address */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 500px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .save-btn {
+            background-color: #2874f0;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .save-btn:hover {
+            background-color: #1a5bbf;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="removelogo.png" alt="Fresh Fruits Logo">
+        </div>
+        <nav class="nav-center">
+            <a href="index.html"><i class="fas fa-home"></i></a>
+            <a href="about.html"><i class="fas fa-info-circle"></i></a>
+            <a href="alphanso.html">
+                <img src="7249442_mango_fruit_tropical_healthy_natural_icon.png" alt="Mango" style="width: 40px; height: 40px;">
+            </a>
+            <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+            <a href="https://wa.me/7821091868" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.instagram.com/md_hasan20_" target="_blank"><i class="fab fa-instagram"></i></a>
+        </nav>
+        <div class="seller-profile">
+            <a href="sellerinfo.html">
+                <img src="hasan.jpg" alt="Seller Profile">
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="header">Select Delivery Address</div>
+        <div class="address-list" id="address-list">
+            <!-- Default address -->
+            <div class="address-card selected">
+                <div class="address-details">
+                    <p><strong>MD HASAN NADKAR</strong></p>
+                    <p>231 B, Bazar Mohalla, Bankot, Mandangad, Maharashtra - 415208</p>
+                    <p>Phone: 7821091868</p>
+                </div>
+                <div class="buttons">
+                    <button class="deliver-btn" onclick="selectDefaultAddress()">Deliver Here</button>
+                </div>
+            </div>
+            <!-- Additional addresses will be added here -->
+        </div>
+        <button class="add-address-btn" id="add-address-btn">+ Add New Address</button>
+    </div>
+    
+    <!-- Add Address Modal -->
+    <div id="addressModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Address</h2>
+            <form id="addressForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name:</label>
+                    <input type="text" id="fullName" required>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" required>
+                </div>
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" required>
+                </div>
+                <div class="form-group">
+                    <label for="state">State:</label>
+                    <input type="text" id="state" required>
+                </div>
+                <div class="form-group">
+                    <label for="pincode">Pincode:</label>
+                    <input type="text" id="pincode" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone Number:</label>
+                    <input type="tel" id="phone" required>
+                </div>
+                <button type="submit" class="save-btn">Save Address</button>
+            </form>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2024 Fresh Fruits Store. All Rights Reserved.</p>
+    </footer>
+    
+    <script>
+        // Get DOM elements
+        const addAddressBtn = document.getElementById("add-address-btn");
+        const modal = document.getElementById("addressModal");
+        const closeBtn = document.querySelector(".close");
+        const addressForm = document.getElementById("addressForm");
+        const addressList = document.getElementById("address-list");
+        
+        // Initialize saved addresses from localStorage or use empty array
+        let savedAddresses = JSON.parse(localStorage.getItem("saved-addresses")) || [];
+        let selectedAddressIndex = JSON.parse(localStorage.getItem("selectedAddressIndex")) || 0;
+        
+        // Display saved addresses when page loads
+        document.addEventListener("DOMContentLoaded", displayAddresses);
+        
+        // Open modal when add address button is clicked
+        addAddressBtn.addEventListener("click", function() {
+            modal.style.display = "block";
+        });
+        
+        // Close modal when X is clicked
+        closeBtn.addEventListener("click", function() {
+            modal.style.display = "none";
+        });
+        
+        // Close modal when clicking outside of it
+        window.addEventListener("click", function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        });
+        
+        // Handle form submission
+        addressForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            
+            const newAddress = {
+                fullName: document.getElementById("fullName").value,
+                address: document.getElementById("address").value,
+                city: document.getElementById("city").value,
+                state: document.getElementById("state").value,
+                pincode: document.getElementById("pincode").value,
+                phone: document.getElementById("phone").value
+            };
+            
+            savedAddresses.push(newAddress);
+            localStorage.setItem("saved-addresses", JSON.stringify(savedAddresses));
+            
+            // Reset form and close modal
+            addressForm.reset();
+            modal.style.display = "none";
+            
+            // Refresh address list
+            displayAddresses();
+        });
+        
+        // Function to display all addresses
+        function displayAddresses() {
+            // Clear existing addresses (except default)
+            while (addressList.children.length > 1) {
+                addressList.removeChild(addressList.lastChild);
+            }
+            
+            // Add saved addresses
+            savedAddresses.forEach((address, index) => {
+                const addressDiv = document.createElement("div");
+                addressDiv.classList.add("address-card");
+                if (index === selectedAddressIndex - 1) {
+                    addressDiv.classList.add("selected");
+                }
+                
+                addressDiv.innerHTML = `
+                    <div class="address-details">
+                        <p><strong>${address.fullName}</strong></p>
+                        <p>${address.address}, ${address.city}, ${address.state} - ${address.pincode}</p>
+                        <p>Phone: ${address.phone}</p>
+                    </div>
+                    <div class="buttons">
+                        <button class="deliver-btn" onclick="selectAddress(${index + 1})">Deliver Here</button>
+                        <button class="remove-btn" onclick="removeAddress(${index})">Remove</button>
+                    </div>
+                `;
+                addressList.appendChild(addressDiv);
+            });
+        }
+        
+        // Function to select default address
+        function selectDefaultAddress() {
+            selectedAddressIndex = 0;
+            localStorage.setItem("selectedAddressIndex", JSON.stringify(selectedAddressIndex));
+            localStorage.setItem("selectedAddress", JSON.stringify({
+                fullName: "MD HASAN NADKAR",
+                address: "231 B, Bazar Mohalla, Bankot, Mandangad",
+                city: "Bankot",
+                state: "Maharashtra",
+                pincode: "415208",
+                phone: "7821091868"
+            }));
+            window.location.href = "bill.html";
+        }
+        
+        // Function to select an address
+        function selectAddress(index) {
+            selectedAddressIndex = index;
+            localStorage.setItem("selectedAddressIndex", JSON.stringify(selectedAddressIndex));
+            localStorage.setItem("selectedAddress", JSON.stringify(savedAddresses[index - 1]));
+            displayAddresses();
+            window.location.href = "bill.html";
+        }
+        
+        // Function to remove an address
+        function removeAddress(index) {
+            if (confirm("Are you sure you want to remove this address?")) {
+                savedAddresses.splice(index, 1);
+                localStorage.setItem("saved-addresses", JSON.stringify(savedAddresses));
+                
+                if (selectedAddressIndex === index + 1) {
+                    selectedAddressIndex = 0;
+                    localStorage.setItem("selectedAddressIndex", JSON.stringify(selectedAddressIndex));
+                }
+                
+                displayAddresses();
+            }
+        }
+    </script>
+</body>
+</html>

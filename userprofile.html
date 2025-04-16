@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile - Fresh Fruits Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        header {
+            background: linear-gradient(90deg, rgba(121,67,9,0.37) 0%, rgba(246,190,58,0.77) 50%, rgba(40,251,227,0.83) 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+        }
+
+        .logo img {
+            width: 80px;
+            height: auto;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .nav-center a:hover {
+            color: #ff6600;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        .cart-icon #cart-count {
+            position: absolute;
+            top: -5px;
+            right: -10px;
+            background-color: #d32f2f;
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            padding: 3px 6px;
+            font-weight: bold;
+        }
+
+        .seller-profile img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        /* Profile Section */
+        .profile-container {
+            max-width: 600px;
+            margin: 120px auto 50px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .profile-container h2 {
+            margin-bottom: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .save-btn, .delete-btn {
+            background: #21da40;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 10px;
+        }
+
+        .delete-btn {
+            background: #d32f2f;
+        }
+
+        .save-btn:hover {
+            background: #18a832;
+        }
+
+        .delete-btn:hover {
+            background: #a82828;
+        }
+
+        .profile-info {
+            text-align: left;
+            margin-top: 20px;
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-info h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .profile-info p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="removelogo.png" alt="Logo">
+        </div>
+        <nav class="nav-center" id="nav-center">
+            <a href="index.html"><i class="fas fa-home"></i></a>
+            <a href="about.html"><i class="fas fa-info-circle"></i></a>
+            <a href="alphanso.html">
+                <img src="7249442_mango_fruit_tropical_healthy_natural_icon.png" alt="Mango" style="width: 40px; height: 40px;">
+            </a>
+            <a href="cart.html" class="cart-icon">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-count">0</span>
+            </a>
+            <a href="account.html"><i class="fas fa-user"></i></a>
+            <a href="https://wa.me/7821091868" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.instagram.com/md_hasan20_" target="_blank"><i class="fab fa-instagram"></i></a>
+        </nav>
+        <div class="seller-profile">
+            <a href="sellerinfo.html">
+                <img src="hasan.jpg" alt="Seller Profile">
+            </a>
+        </div>
+    </header>
+
+    <main class="profile-container">
+        <h2>User Profile</h2>
+        <form id="profileForm">
+            <div class="input-group">
+                <input type="text" id="name" placeholder="Enter Name" required>
+            </div>
+            <div class="input-group">
+                <input type="email" id="email" placeholder="Enter Email" required>
+            </div>
+            <div class="input-group">
+                <input type="tel" id="phone" placeholder="Enter Phone" pattern="[0-9]{10}" required>
+            </div>
+            <button type="submit" class="save-btn">Save Profile</button>
+            <button type="button" class="delete-btn" onclick="deleteProfile()">Delete Profile</button>
+        </form>
+
+        <div class="profile-info" id="profileInfo"></div>
+    </main>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", displayProfile);
+
+        document.getElementById("profileForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const phone = document.getElementById("phone").value;
+
+            const userProfile = { name, email, phone };
+            localStorage.setItem("userProfile", JSON.stringify(userProfile));
+            displayProfile();
+        });
+
+        function displayProfile() {
+            const userProfile = JSON.parse(localStorage.getItem("userProfile"));
+            if (userProfile) {
+                document.getElementById("profileInfo").innerHTML = `
+                    <h3>Profile Details</h3>
+                    <p><strong>Name:</strong> ${userProfile.name || ''}</p>
+                    <p><strong>Email:</strong> ${userProfile.email || ''}</p>
+                    <p><strong>Phone:</strong> ${userProfile.phone || ''}</p>
+                `;
+            }
+        }
+
+        function deleteProfile() {
+            localStorage.removeItem("userProfile");
+            document.getElementById("profileInfo").innerHTML = "";
+        }
+    </script>
+</body>
+</html>

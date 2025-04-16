@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 350px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e3e7;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .toggle {
+            margin-top: 20px;
+            color: #7f8c8d;
+        }
+        .toggle a {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .toggle a:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin: 10px 0;
+            min-height: 20px;
+        }
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            margin: 10px 0;
+            min-height: 20px;
+        }
+        .password-container {
+            position: relative;
+        }
+        .toggle-password {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+        .security-notice {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome Back</h2>
+        <div class="error-message" id="error-message"></div>
+        <div class="success-message" id="success-message"></div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" placeholder="Enter your email" required autocomplete="username">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <div class="password-container">
+                    <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+                    <span class="toggle-password" id="toggle-password">👁️</span>
+                </div>
+            </div>
+            
+            <button type="submit" id="login-button">Login</button>
+        </form>
+        
+        <div class="toggle">
+            Don't have an account? <a href="signup.html">Sign Up</a>
+        </div>
+        
+        <div class="security-notice">
+            🔒 Your security is important to us. We use secure methods to protect your information.
+        </div>
+    </div>
+
+    <script>
+        // Password hashing function (for demo purposes - not production-grade)
+        async function hashPassword(password) {
+            // In a real app, this would be done server-side with proper hashing like bcrypt
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password + 'my-salt-value');
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        // Toggle password visibility
+        document.getElementById('toggle-password').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '👁️‍🗨️';
+        });
+
+        // Form submission
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('error-message');
+            const successMessage = document.getElementById('success-message');
+            const loginButton = document.getElementById('login-button');
+            
+            // Clear messages
+            errorMessage.textContent = '';
+            successMessage.textContent = '';
+            
+            // Validate inputs
+            if (!email || !password) {
+                errorMessage.textContent = 'Please fill in all fields';
+                return;
+            }
+            
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                errorMessage.textContent = 'Please enter a valid email address';
+                return;
+            }
+            
+            // Disable button during processing
+            loginButton.disabled = true;
+            loginButton.textContent = 'Authenticating...';
+            
+            try {
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 800));
+                
+                // Get users from localStorage
+                const users = JSON.parse(localStorage.getItem('users')) || [];
+                const user = users.find(u => u.email === email);
+                
+                if (!user) {
+                    errorMessage.textContent = 'Account not found. Please sign up.';
+                    return;
+                }
+                
+                // Hash the provided password for comparison
+                const hashedPassword = await hashPassword(password);
+                
+                if (user.passwordHash !== hashedPassword) {
+                    errorMessage.textContent = 'Incorrect password. Please try again.';
+                    return;
+                }
+                
+                // Successful login
+                successMessage.textContent = 'Login successful! Redirecting...';
+                
+                // Store session (with expiration)
+                const session = {
+                    user: {
+                        email: user.email,
+                        name: user.name || 'User'
+                    },
+                    expires: Date.now() + (1000 * 60 * 60 * 2) // 2 hours
+                };
+                localStorage.setItem('currentSession', JSON.stringify(session));
+                
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Login error:', error);
+                errorMessage.textContent = 'An error occurred. Please try again.';
+            } finally {
+                loginButton.disabled = false;
+                loginButton.textContent = 'Login';
+            }
+        });
+
+        // Check for existing session
+        function checkSession() {
+            const sessionData = localStorage.getItem('currentSession');
+            if (sessionData) {
+                const session = JSON.parse(sessionData);
+                if (session.expires > Date.now()) {
+                    window.location.href = 'dashboard.html';
+                } else {
+                    localStorage.removeItem('currentSession');
+                }
+            }
+        }
+        
+        // Run session check when page loads
+        checkSession();
+    </script>
+</body>
+</html>
+
+
+
+ <!-- Product Grid -->
+ <section id="products">
+    <div class="product-card">
+        <img src="1dozen.jpg" alt="Fresh Alphonso Mango (1 Dozen)">
+        <div class="product-details">
+            <h3>Alphonso Mango (1 Dozen)</h3>
+            <p data-price="500">₹500</p>
+            <button class="add-to-cart" aria-label="Add Fresh Mango (1 Dozen) to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="2dozen.jpg" alt="Alphonso Mango (2 Dozen)">
+        <div class="product-details">
+            <h3>Alphonso Mango (2 Dozen)</h3>
+            <p data-price="800">₹800</p>
+            <button class="add-to-cart" aria-label="Add Mango (2 Dozen) to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="4dozen.jpg" alt="Alphonso Mango (4 Dozen)">
+        <div class="product-details">
+            <h3>Alphonso Mango (4 Dozen)</h3>
+            <p data-price="1500">₹1500</p>
+            <button class="add-to-cart" aria-label="Add Mango (4 Dozen) to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="mangobuefi.jpg" alt="Mango Burfi">
+        <div class="product-details">
+            <h3>Mango Burfi</h3>
+            <p data-price="500">₹500 per kg</p>
+            <button class="add-to-cart" aria-label="Add Mango Burfi to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="mangopickle.jpg" alt="Mango Pickle">
+        <div class="product-details">
+            <h3>Mango Pickle</h3>
+            <p data-price="600">₹600 per kg</p>
+            <button class="add-to-cart" aria-label="Add Mango Pickle to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="mangoroti.jpg" alt="Dried Mango Slices">
+        <div class="product-details">
+            <h3>Dried Mango Slices</h3>
+            <p data-price="400">₹400 per kg</p>
+            <button class="add-to-cart" aria-label="Add Dried Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="mangomurabba.jpg" alt="Mango Murabba">
+        <div class="product-details">
+            <h3>Mango Murabba</h3>
+            <p data-price="2000">₹2000 per kg</p>
+            <button class="add-to-cart" aria-label="Add Mango Murabba to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="mangojuice.jpg" alt="Mango Juice">
+        <div class="product-details">
+            <h3>Mango Juice</h3>
+            <p data-price="200">₹200 per liter</p>
+            <button class="add-to-cart" aria-label="Add Mango Juice to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="mangocandy.jpg" alt="Mango Candy">
+        <div class="product-details">
+            <h3>Mango Candy</h3>
+            <p data-price="100">₹100 per pack</p>
+            <button class="add-to-cart" aria-label="Add Mango Candy to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="totapuri.jpg" alt="Totapuri Mango">
+        <div class="product-details">
+            <h3>Totapuri Mango</h3> 
+            <p data-price="1500">₹1500 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Totapuri Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="pairi.jpj.jpg" alt="Pairi Mango">
+        <div class="product-details">
+            <h3>Pairi Mango (1 dozen)</h3>
+            <p data-price="2000">₹2000 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Pairi Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="pairi.jpj.jpg" alt="Pairi Mango">
+        <div class="product-details">
+            <h3>Pairi Mango (2 dozen)</h3>
+            <p data-price="2500">₹2500 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Pairi Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="pairi.jpj.jpg" alt="Pairi Mango">
+        <div class="product-details">
+            <h3>Pairi Mango (4 dozen)</h3>
+            <p data-price="4500">₹4500 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Pairi Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="ratnamango.jpg" alt="Ratna Mango">
+        <div class="product-details">
+            <h3>Ratna Mango</h3>
+            <p data-price="2000">₹2000 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Ratna Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="kespuri.jpg" alt="Kesar Mango">
+        <div class="product-details">
+            <h3>Kesar Mango (2 dozen)</h3>
+            <p data-price="1500">₹1500 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Kesar Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="kespuri.jpg" alt="Kesar Mango">
+        <div class="product-details">
+            <h3>Kesar Mango (1 dozen)</h3>
+            <p data-price="1000">₹1000 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Kesar Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="kespuri.jpg" alt="Kesar Mango">
+        <div class="product-details">
+            <h3>Kesar Mango (4 dozen)</h3>
+            <p data-price="4000">₹4000 per dozen</p>
+            <button class="add-to-cart" aria-label="Add Kesar Mango to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="newimage.jpg" alt="Mango Chutney">
+        <div class="product-details">
+            <h3>Mango Chutney</h3>
+            <p data-price="300">₹300</p>
+            <button class="add-to-cart" aria-label="Add Mango Chutney to Cart">Add to Cart</button>
+        </div>
+    </div>
+    <div class="product-card">
+        <img src="aampanna.jpg" alt="Aam Panna">
+        <div class="product-details">
+            <h3>Aam Panna</h3>
+            <p data-price="300">₹300 (500 ml)</p>
+            <button class="add-to-cart" aria-label="Add Aam Panna to Cart">Add to Cart</button>
+        </div>
+    </div>
+</section>

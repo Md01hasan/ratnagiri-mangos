@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Ratnagiri Mango</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Navbar */
+        header {
+            background: rgb(121,67,9);
+            background: linear-gradient(90deg, rgba(121,67,9,0.37298669467787116) 0%, rgba(246,190,58,0.7651435574229692) 0%, rgba(40,251,227,0.8295693277310925) 100%);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            height: 60px;
+        }
+
+        .logo img {
+            width: 80px;
+            height: auto;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-center a {
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .nav-center a:hover {
+            color: #ff6600;
+        }
+
+        .nav-center i {
+            font-size: 22px;
+        }
+
+        .seller-profile {
+            display: flex;
+            align-items: center;
+        }
+
+        .seller-profile img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            cursor: pointer;
+            border: 2px solid #fff;
+        }
+
+        /* Payment Container */
+        .payment-container {
+            max-width: 800px;
+            margin: 100px auto 50px;
+            padding: 30px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .payment-option:hover, .payment-option.selected {
+            border-color: #2874f0;
+            background-color: #f5f9ff;
+        }
+
+        .payment-option input {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .payment-option label {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .payment-details {
+            display: none;
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .payment-details input, .payment-details select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .payment-details input:focus, .payment-details select:focus {
+            outline: none;
+            border-color: #2874f0;
+        }
+
+        .qr-container {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .qr-container img {
+            max-width: 200px;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            padding: 12px;
+            background: #fb641b;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+            font-weight: bold;
+        }
+
+        .place-order-btn:hover {
+            background: #e55c17;
+        }
+
+        .place-order-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .payment-container {
+                margin: 80px 15px 30px;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="removelogo.png" alt="Fresh Fruits Logo">
+        </div>
+        <nav class="nav-center">
+            <a href="index.html"><i class="fas fa-home"></i></a>
+            <a href="about.html"><i class="fas fa-info-circle"></i></a>
+            <a href="alphanso.html">
+                <img src="7249442_mango_fruit_tropical_healthy_natural_icon.png" alt="Mango" style="width: 40px; height: 40px;">
+            </a>
+            <a href="cart.html"><i class="fas fa-shopping-cart"></i></a>
+            <a href="https://wa.me/7821091868" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            <a href="https://www.instagram.com/md_hasan20_" target="_blank"><i class="fab fa-instagram"></i></a>
+        </nav>
+        <div class="seller-profile">
+            <a href="sellerinfo.html">
+                <img src="hasan.jpg" alt="Seller Profile">
+            </a>
+        </div>
+    </header>
+
+    <div class="payment-container">
+        <h2>Select Payment Method</h2>
+
+        <div class="payment-option" onclick="selectPayment('Credit/Debit Card')">
+            <input type="radio" name="payment" id="card-payment">
+            <label for="card-payment">Credit/Debit Card</label>
+        </div>
+        <div id="card-details" class="payment-details">
+            <input type="text" placeholder="Card Number" maxlength="16" pattern="[0-9]{16}" required>
+            <input type="text" placeholder="Cardholder Name" required>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" placeholder="Expiry (MM/YY)" maxlength="5" pattern="(0[1-9]|1[0-2])\/[0-9]{2}" required style="flex: 1;">
+                <input type="text" placeholder="CVV" maxlength="3" pattern="[0-9]{3}" required style="flex: 1;">
+            </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('UPI')">
+            <input type="radio" name="payment" id="upi-payment">
+            <label for="upi-payment">UPI Payment</label>
+        </div>
+        <div id="upi-details" class="payment-details">
+            <input type="text" placeholder="Enter UPI ID (e.g. 7821091868@ybl)" pattern=".+@.+" required>
+            <p style="font-size: 12px; color: #666; margin-top: 5px;">We support all UPI apps like Google Pay, PhonePe, Paytm</p>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('Net Banking')">
+            <input type="radio" name="payment" id="netbanking-payment">
+            <label for="netbanking-payment">Net Banking</label>
+        </div>
+        <div id="netbanking-details" class="payment-details">
+            <select required>
+                <option value="">Select Your Bank</option>
+                <option>State Bank of India</option>
+                <option>HDFC Bank</option>
+                <option>ICICI Bank</option>
+                <option>Axis Bank</option>
+                <option>Bank of Baroda</option>
+            </select>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('QR Code')">
+            <input type="radio" name="payment" id="qr-payment">
+            <label for="qr-payment">QR Code Payment</label>
+        </div>
+        <div id="qr-details" class="payment-details">
+            <p>Scan this QR code using any UPI app to complete your payment:</p>
+            <div class="qr-container">
+                <img src="QR.png.jpg" alt="Payment QR Code">
+                <p style="margin-top: 10px; font-weight: bold;">UPI ID: 7821091868@ybl</p>
+                <p style="font-size: 12px; color: #666;">After payment, please share screenshot on WhatsApp</p>
+            </div>
+        </div>
+
+        <div class="payment-option" onclick="selectPayment('Cash on Delivery')">
+            <input type="radio" name="payment" id="cod-payment">
+            <label for="cod-payment">Cash on Delivery (COD)</label>
+        </div>
+        <div id="cod-details" class="payment-details">
+            <p>Pay cash when you receive your order. Extra ₹50 COD charges apply.</p>
+        </div>
+
+        <button class="place-order-btn" id="place-order-btn" disabled onclick="placeOrder()">PLACE ORDER</button>
+    </div>
+
+    <footer>
+        <p>© 2024 Fresh Fruits Store. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        let selectedPaymentMethod = null;
+        const placeOrderBtn = document.getElementById('place-order-btn');
+
+        function selectPayment(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll(".payment-option").forEach(option => {
+                option.classList.remove("selected");
+            });
+            event.currentTarget.classList.add("selected");
+            
+            // Hide all payment details
+            document.querySelectorAll(".payment-details").forEach(detail => {
+                detail.style.display = "none";
+            });
+            
+            // Show selected payment details
+            if (method === "Credit/Debit Card") {
+                document.getElementById("card-details").style.display = "block";
+            } else if (method === "UPI") {
+                document.getElementById("upi-details").style.display = "block";
+            } else if (method === "Net Banking") {
+                document.getElementById("netbanking-details").style.display = "block";
+            } else if (method === "QR Code") {
+                document.getElementById("qr-details").style.display = "block";
+            } else if (method === "Cash on Delivery") {
+                document.getElementById("cod-details").style.display = "block";
+            }
+            
+            // Enable place order button
+            placeOrderBtn.disabled = false;
+        }
+
+        function placeOrder() {
+            if (!selectedPaymentMethod) {
+                alert("Please select a payment method!");
+                return;
+            }
+            
+            // Validate payment details based on selected method
+            let isValid = true;
+            
+            if (selectedPaymentMethod === "Credit/Debit Card") {
+                const inputs = document.querySelectorAll("#card-details input");
+                inputs.forEach(input => {
+                    if (!input.checkValidity()) {
+                        input.reportValidity();
+                        isValid = false;
+                    }
+                });
+            } 
+            else if (selectedPaymentMethod === "UPI") {
+                const upiInput = document.querySelector("#upi-details input");
+                if (!upiInput.checkValidity()) {
+                    upiInput.reportValidity();
+                    isValid = false;
+                }
+            }
+            else if (selectedPaymentMethod === "Net Banking") {
+                const bankSelect = document.querySelector("#netbanking-details select");
+                if (!bankSelect.value) {
+                    alert("Please select your bank");
+                    isValid = false;
+                }
+            }
+            
+            if (isValid) {
+                // Save payment method to localStorage
+                localStorage.setItem('paymentMethod', selectedPaymentMethod);
+                
+                // Show processing message
+                placeOrderBtn.disabled = true;
+                placeOrderBtn.textContent = "Processing...";
+                
+                // Simulate processing delay
+                setTimeout(() => {
+                    window.location.href = "confirmation.html";
+                }, 1500);
+            }
+        }
+    </script>
+</body>
+</html>
